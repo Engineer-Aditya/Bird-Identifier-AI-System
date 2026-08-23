@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ad's Birdolove — Listen. See. Learn.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --dusk:#1B3B6F;
+    --dusk-deep:#0F2647;
+    --sunrise:#FF6B35;
+    --yellow:#FFC857;
+    --leaf:#4ECB71;
+    --cream:#FFF8F0;
+    --ink:#14213D;
+    --lavender:#C9B6E4;
+    --radius:20px;
+    --shadow: 0 20px 50px -20px rgba(15,38,71,0.35);
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+
+  html{scroll-behavior:smooth;}
+
+  body{
+    background:var(--cream);
+    color:var(--ink);
+    font-family:'Work Sans', sans-serif;
+    overflow-x:hidden;
+  }
+
+  h1,h2,h3{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    letter-spacing:-0.01em;
+  }
+
+  .mono{
+    font-family:'JetBrains Mono', monospace;
+    letter-spacing:0.02em;
+  }
+
+  a{color:inherit;}
+
+  button{
+    font-family:inherit;
+    cursor:pointer;
+    border:none;
+  }
+
+  :focus-visible{
+    outline:3px solid var(--sunrise);
+    outline-offset:3px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important;}
+  }
+
+  /* ---------- NAV ---------- */
+  nav{
+    position:fixed;
+    top:0; left:0; right:0;
+    z-index:100;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:22px 5vw;
+    mix-blend-mode:normal;
+  }
+
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:1.3rem;
+    color:var(--cream);
+  }
+
+  .brand-mark{
+    width:30px; height:30px;
+    display:block;
+  }
+
+  .nav-status{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.75rem;
+    color:var(--cream);
+    opacity:0.85;
+    background:rgba(255,255,255,0.1);
+    padding:8px 14px;
+    border-radius:999px;
+    backdrop-filter:blur(6px);
+  }
+
+  .dot{
+    width:7px; height:7px;
+    border-radius:50%;
+    background:var(--leaf);
+    box-shadow:0 0 8px var(--leaf);
+  }
+
+  /* ---------- HERO / FLOCK SCENE ---------- */
+  .hero{
+    position:relative;
+    height:100vh;
+    min-height:640px;
+    background:linear-gradient(180deg, #0B1E3D 0%, var(--dusk) 45%, #3D6FA8 75%, #F7A15C 100%);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+  }
+
+  .sun{
+    position:absolute;
+    bottom:-120px;
+    left:50%;
+    transform:translateX(-50%);
+    width:420px; height:420px;
+    border-radius:50%;
+    background:radial-gradient(circle at 50% 50%, rgba(255,200,87,0.9), rgba(255,107,53,0.15) 60%, transparent 70%);
+    filter:blur(2px);
+  }
+
+  .scene{
+    position:absolute;
+    inset:0;
+    perspective:1200px;
+    perspective-origin:50% 40%;
+  }
+
+  .flock{
+    position:absolute;
+    inset:0;
+    transform-style:preserve-3d;
+    transition:transform 0.4s ease-out;
+  }
+
+  .bird{
+    position:absolute;
+    transform-style:preserve-3d;
+    will-change:transform;
+  }
+
+  .bird svg{
+    display:block;
+    filter:drop-shadow(0 8px 14px rgba(15,38,71,0.35));
+  }
+
+  .bird .wing{
+    transform-origin:50% 50%;
+    animation:flap 1.1s ease-in-out infinite;
+  }
+
+  .bird .wing.right{ animation-delay:0s; }
+  .bird .wing.left{ animation-delay:0s; transform:scaleX(-1); }
+
+  @keyframes flap{
+    0%, 100%{ transform:rotateX(0deg) skewY(0deg); }
+    50%{ transform:rotateX(55deg) skewY(6deg); }
+  }
+
+  .bird.drift{
+    animation:drift linear infinite;
+  }
+
+  @keyframes drift{
+    from{ margin-left:0; }
+    to{ margin-left:-40px; }
+  }
+
+  .hero-copy{
+    position:relative;
+    z-index:5;
+    text-align:center;
+    color:var(--cream);
+    max-width:760px;
+    padding:0 24px;
+  }
+
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.8rem;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--yellow);
+    display:block;
+    margin-bottom:18px;
+  }
+
+  .hero-copy h1{
+    font-size:clamp(2.6rem, 6vw, 4.6rem);
+    line-height:1.04;
+    color:var(--cream);
+  }
+
+  .hero-copy h1 em{
+    font-style:italic;
+    color:var(--yellow);
+  }
+
+  .hero-copy p{
+    margin-top:22px;
+    font-size:1.15rem;
+    line-height:1.6;
+    color:rgba(255,248,240,0.85);
+    max-width:560px;
+    margin-left:auto;
+    margin-right:auto;
+  }
+
+  .hero-cta{
+    margin-top:36px;
+    display:flex;
+    gap:14px;
+    justify-content:center;
+    flex-wrap:wrap;
+  }
+
+  .btn-primary, .btn-ghost{
+    padding:15px 30px;
+    border-radius:999px;
+    font-size:0.98rem;
+    font-weight:500;
+    transition:transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .btn-primary{
+    background:var(--sunrise);
+    color:var(--cream);
+    box-shadow:0 12px 24px -8px rgba(255,107,53,0.6);
+  }
+  .btn-primary:hover{ transform:translateY(-2px); }
+
+  .btn-ghost{
+    background:rgba(255,255,255,0.12);
+    color:var(--cream);
+    backdrop-filter:blur(6px);
+  }
+  .btn-ghost:hover{ background:rgba(255,255,255,0.2); }
+
+  .scroll-cue{
+    position:absolute;
+    bottom:28px; left:50%;
+    transform:translateX(-50%);
+    color:var(--cream);
+    opacity:0.6;
+    font-size:0.7rem;
+    font-family:'JetBrains Mono', monospace;
+    letter-spacing:0.15em;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+  }
+
+  .scroll-cue .line{
+    width:1px; height:34px;
+    background:linear-gradient(var(--cream), transparent);
+    animation:pulse-line 1.8s ease-in-out infinite;
+  }
+
+  @keyframes pulse-line{
+    0%,100%{ opacity:0.3; } 50%{ opacity:1; }
+  }
+
+  /* ---------- SECTION LABEL ---------- */
+  .section-label{
+    text-align:center;
+    padding:80px 24px 10px;
+  }
+
+  .section-label .eyebrow{ color:var(--sunrise); }
+  .section-label h2{
+    font-size:clamp(1.9rem, 3.4vw, 2.6rem);
+    color:var(--ink);
+    max-width:640px;
+    margin:0 auto;
+  }
+
+  /* ---------- CAPABILITY GRID ---------- */
+  .capabilities{
+    display:grid;
+    grid-template-columns:1.15fr 1fr 1fr;
+    gap:22px;
+    max-width:1160px;
+    margin:50px auto 100px;
+    padding:0 24px;
+  }
+
+  @media (max-width:900px){
+    .capabilities{ grid-template-columns:1fr; }
+  }
+
+  .panel{
+    background:#fff;
+    border-radius:var(--radius);
+    padding:32px;
+    box-shadow:var(--shadow);
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+    border-top:6px solid var(--accent, var(--sunrise));
+  }
+
+  .panel.mic{ --accent:var(--sunrise); }
+  .panel.cam{ --accent:var(--leaf); }
+  .panel.upload{ --accent:var(--lavender); grid-column:span 1;}
+
+  .panel-head{
+    display:flex;
+    align-items:center;
+    gap:14px;
+  }
+
+  .panel-icon{
+    width:46px; height:46px;
+    border-radius:14px;
+    background:color-mix(in srgb, var(--accent) 16%, white);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+  }
+
+  .panel-icon svg{ width:22px; height:22px; }
+
+  .panel h3{ font-size:1.25rem; color:var(--ink); }
+  .panel .sub{ font-size:0.85rem; color:#6b7280; font-family:'Work Sans'; }
+
+  .panel-body{ flex:1; display:flex; flex-direction:column; gap:14px; }
+
+  .status-line{
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.78rem;
+    color:#6b7280;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+
+  /* Mic visualizer */
+  .visualizer{
+    height:64px;
+    display:flex;
+    align-items:flex-end;
+    gap:4px;
+    background:#FFF4EC;
+    border-radius:12px;
+    padding:10px 14px;
+  }
+
+  .visualizer span{
+    flex:1;
+    background:var(--sunrise);
+    border-radius:3px;
+    min-height:4px;
+    transition:height 0.1s ease;
+  }
+
+  /* Camera preview */
+  .cam-preview{
+    background:#0F2647;
+    border-radius:12px;
+    aspect-ratio:16/10;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+    position:relative;
+  }
+
+  .cam-preview video, .cam-preview img{
+    width:100%; height:100%; object-fit:cover;
+  }
+
+  .cam-preview .placeholder{
+    color:rgba(255,255,255,0.5);
+    font-size:0.8rem;
+    font-family:'JetBrains Mono', monospace;
+    text-align:center;
+  }
+
+  /* Upload dropzone */
+  .dropzone{
+    border:2px dashed #D8CDEA;
+    border-radius:12px;
+    padding:22px;
+    text-align:center;
+    background:#FAF7FF;
+    transition:background 0.2s ease, border-color 0.2s ease;
+  }
+
+  .dropzone.drag{
+    background:#F1E9FF;
+    border-color:var(--lavender);
+  }
+
+  .dropzone p{ font-size:0.85rem; color:#6b7280; margin-top:6px; }
+
+  .thumb-row{
+    display:flex;
+    gap:8px;
+    margin-top:12px;
+    flex-wrap:wrap;
+  }
+
+  .thumb-row img{
+    width:52px; height:52px;
+    object-fit:cover;
+    border-radius:8px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.12);
+  }
+
+  .action-btn{
+    padding:12px 20px;
+    border-radius:12px;
+    background:var(--accent);
+    color:#fff;
+    font-weight:500;
+    font-size:0.9rem;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    justify-content:center;
+    transition:filter 0.2s ease;
+  }
+  .action-btn:hover{ filter:brightness(1.08); }
+  .action-btn:disabled{ opacity:0.5; cursor:not-allowed; }
+
+  .action-btn.stop{ background:#DC4C3E; }
+
+  /* ---------- DATA LOG ---------- */
+  .log-section{
+    max-width:1160px;
+    margin:0 auto 100px;
+    padding:0 24px;
+  }
+
+  .log-card{
+    background:var(--ink);
+    border-radius:var(--radius);
+    padding:30px;
+    color:var(--cream);
+  }
+
+  .log-card h3{ color:var(--cream); margin-bottom:16px; font-size:1.1rem; }
+
+  .log-list{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    max-height:220px;
+    overflow-y:auto;
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.8rem;
+  }
+
+  .log-list .entry{
+    display:flex;
+    gap:12px;
+    padding:10px 14px;
+    background:rgba(255,255,255,0.05);
+    border-radius:8px;
+    border-left:3px solid var(--yellow);
+  }
+
+  .log-list .entry .t{ color:var(--yellow); flex-shrink:0; }
+  .log-list::-webkit-scrollbar{ width:6px; }
+  .log-list::-webkit-scrollbar-thumb{ background:rgba(255,255,255,0.2); border-radius:3px; }
+
+  /* ---------- VOICE ORB ---------- */
+  .orb-wrap{
+    position:fixed;
+    bottom:28px; right:28px;
+    z-index:200;
+    display:flex;
+    flex-direction:column;
+    align-items:flex-end;
+    gap:14px;
+  }
+
+  .orb{
+    width:66px; height:66px;
+    border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, var(--yellow), var(--sunrise) 65%);
+    box-shadow:0 10px 30px -6px rgba(255,107,53,0.6);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+  }
+
+  .orb::after{
+    content:'';
+    position:absolute;
+    inset:-8px;
+    border-radius:50%;
+    border:2px solid rgba(255,107,53,0.4);
+    animation:ring 2.2s ease-out infinite;
+  }
+
+  @keyframes ring{
+    0%{ transform:scale(0.9); opacity:0.8; }
+    100%{ transform:scale(1.5); opacity:0; }
+  }
+
+  .orb svg{ width:26px; height:26px; color:#fff; position:relative; z-index:2;}
+
+  .orb.listening{ animation:orb-pulse 0.8s ease-in-out infinite; }
+  @keyframes orb-pulse{ 0%,100%{ transform:scale(1);} 50%{ transform:scale(1.08);} }
+
+  .console{
+    width:300px;
+    background:#fff;
+    border-radius:18px;
+    box-shadow:var(--shadow);
+    padding:20px;
+    display:none;
+    flex-direction:column;
+    gap:12px;
+  }
+
+  .console.open{ display:flex; }
+
+  .console-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+  }
+
+  .console-head span{ font-family:'Fraunces', serif; font-weight:600; }
+
+  .console-transcript{
+    min-height:60px;
+    background:#FFF8F0;
+    border-radius:10px;
+    padding:12px;
+    font-size:0.88rem;
+    color:var(--ink);
+  }
+
+  .console-transcript.placeholder{ color:#a8a29e; font-style:italic; }
+
+  footer{
+    text-align:center;
+    padding:40px 24px 60px;
+    color:#9CA3AF;
+    font-size:0.8rem;
+    font-family:'JetBrains Mono', monospace;
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="brand">
+    <svg class="brand-mark" viewBox="0 0 40 40" fill="none">
+      <path d="M4 24 C10 14, 16 12, 20 18 C24 12, 30 14, 36 24 C28 20, 24 22, 20 28 C16 22, 12 20, 4 24Z" fill="#FFC857"/>
+    </svg>
+    Ad's Birdolove
+  </div>
+  <div class="nav-status mono"><span class="dot"></span> SYSTEM READY</div>
+</nav>
+
+<section class="hero">
+  <div class="sun"></div>
+  <div class="scene" id="scene">
+    <div class="flock" id="flock"><!-- birds injected by JS --></div>
+  </div>
+
+  <div class="hero-copy">
+    <span class="eyebrow">Multimodal input, one flock</span>
+    <h1>Listen, watch, and <em>gather</em> — all at once.</h1>
+    <p>Aviary brings voice, camera, and upload into a single intake layer, so your assistant sees and hears the full picture before it responds.</p>
+    <div class="hero-cta">
+      <button class="btn-primary" onclick="document.getElementById('capabilities').scrollIntoView({behavior:'smooth'})">Open the console</button>
+      <button class="btn-ghost" onclick="document.getElementById('log-section').scrollIntoView({behavior:'smooth'})">View activity log</button>
+    </div>
+  </div>
+
+  <div class="scroll-cue"><span>SCROLL</span><span class="line"></span></div>
+</section>
+
+<div class="section-label">
+  <span class="eyebrow mono">Three ways in</span>
+  <h2>Every input lands in the same place.</h2>
+</div>
+
+<div class="capabilities" id="capabilities">
+
+  <!-- MIC PANEL -->
+  <div class="panel mic">
+    <div class="panel-head">
+      <div class="panel-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#FF6B35" stroke-width="2" stroke-linecap="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10v1a7 7 0 0 0 14 0v-1"/><path d="M12 18v4M9 22h6"/></svg>
+      </div>
+      <div>
+        <h3>Voice listener</h3>
+        <div class="sub">Ambient mic capture</div>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div class="visualizer" id="visualizer">
+        <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+      </div>
+      <div class="status-line" id="mic-status"><span class="dot" style="background:#d1d5db;box-shadow:none;"></span> Idle — mic not started</div>
+      <button class="action-btn" id="mic-btn">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="white" stroke-width="2"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10v1a7 7 0 0 0 14 0v-1"/></svg>
+        Start listening
+      </button>
+    </div>
+  </div>
+
+  <!-- CAMERA PANEL -->
+  <div class="panel cam">
+    <div class="panel-head">
+      <div class="panel-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#4ECB71" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+      </div>
+      <div>
+        <h3>Camera</h3>
+        <div class="sub">Live capture</div>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div class="cam-preview" id="cam-preview">
+        <span class="placeholder">Camera off</span>
+      </div>
+      <div class="status-line" id="cam-status"><span class="dot" style="background:#d1d5db;box-shadow:none;"></span> Not connected</div>
+      <button class="action-btn" id="cam-btn">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="white" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/></svg>
+        Enable camera
+      </button>
+    </div>
+  </div>
+
+  <!-- UPLOAD PANEL -->
+  <div class="panel upload">
+    <div class="panel-head">
+      <div class="panel-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#9B7FC4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      </div>
+      <div>
+        <h3>Upload a photo</h3>
+        <div class="sub">From your files</div>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div class="dropzone" id="dropzone">
+        <p><strong style="color:#5b21b6;">Drop an image</strong> or click to browse</p>
+        <div class="thumb-row" id="thumb-row"></div>
+      </div>
+      <input type="file" id="file-input" accept="image/*" multiple style="display:none;">
+      <div class="status-line" id="upload-status"><span class="dot" style="background:#d1d5db;box-shadow:none;"></span> No files yet</div>
+    </div>
+  </div>
+</div>
+
+<div class="log-section" id="log-section">
+  <div class="log-card">
+    <h3>Activity log</h3>
+    <div class="log-list" id="log-list">
+      <div class="entry"><span class="t">--:--:--</span><span>Waiting for input — start the mic, camera, or upload a photo above.</span></div>
+    </div>
+  </div>
+</div>
+
+<footer>AD'S BIRDOLOVE — a demo intake surface. No data leaves this page.</footer>
+
+<div class="orb-wrap">
+  <div class="console" id="console">
+    <div class="console-head">
+      <span>Voice assistant</span>
+      <button onclick="toggleConsole(false)" style="background:none;color:#9ca3af;font-size:1.1rem;">✕</button>
+    </div>
+    <div class="console-transcript placeholder" id="transcript">Tap the orb, then speak — I'll transcribe here.</div>
+    <button class="action-btn" id="orb-mic-btn" style="background:var(--sunrise);">Speak</button>
+  </div>
+  <button class="orb" id="orb" onclick="toggleConsole()" aria-label="Open voice assistant">
+    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10v1a7 7 0 0 0 14 0v-1"/><path d="M12 18v4M9 22h6"/></svg>
+  </button>
+</div>
+
+<script>
+/* ---------------- 3D BIRD FLOCK ---------------- */
+const flock = document.getElementById('flock');
+const scene = document.getElementById('scene');
+
+function birdSVG(color){
+  return `<svg width="46" height="26" viewBox="0 0 46 26">
+    <g class="wing right" style="transform-origin:23px 13px;">
+      <path d="M23 13 C30 4, 40 4, 45 10 C36 10, 29 12, 23 13Z" fill="${color}"/>
+    </g>
+    <g class="wing left" style="transform-origin:23px 13px;">
+      <path d="M23 13 C30 4, 40 4, 45 10 C36 10, 29 12, 23 13Z" fill="${color}"/>
+    </g>
+    <ellipse cx="22" cy="14" rx="5" ry="3" fill="${color}"/>
+  </svg>`;
+}
+
+const colors = ['#FFC857','#FF6B35','#FFF8F0','#F2A65A'];
+const flockData = [];
+const BIRD_COUNT = 14;
+
+for(let i=0;i<BIRD_COUNT;i++){
+  const depth = Math.random(); // 0 = far, 1 = near
+  const z = -600 + depth*700;
+  const scale = 0.5 + depth*0.9;
+  const top = 10 + Math.random()*55;
+  const left = Math.random()*100;
+  const duration = 18 - depth*10 + Math.random()*4;
+  const color = colors[Math.floor(Math.random()*colors.length)];
+  const flapDelay = Math.random()*1.1;
+
+  const el = document.createElement('div');
+  el.className = 'bird drift';
+  el.style.top = top+'vh';
+  el.style.left = left+'vw';
+  el.style.transform = `translateZ(${z}px) scale(${scale})`;
+  el.style.opacity = 0.35 + depth*0.65;
+  el.style.animationDuration = duration+'s';
+  el.style.animationDelay = (-Math.random()*duration)+'s';
+  el.innerHTML = birdSVG(color);
+  el.querySelectorAll('.wing').forEach(w => w.style.animationDelay = flapDelay+'s');
+
+  flock.appendChild(el);
+}
+
+// mouse parallax tilt
+scene.addEventListener('mousemove', (e) => {
+  const x = (e.clientX / window.innerWidth - 0.5) * 14;
+  const y = (e.clientY / window.innerHeight - 0.5) * 10;
+  flock.style.transform = `rotateY(${x}deg) rotateX(${-y}deg)`;
+});
+scene.addEventListener('mouseleave', () => {
+  flock.style.transform = `rotateY(0deg) rotateX(0deg)`;
+});
+
+/* ---------------- LOG HELPER ---------------- */
+const logList = document.getElementById('log-list');
+function addLog(msg){
+  const time = new Date().toLocaleTimeString();
+  const entry = document.createElement('div');
+  entry.className = 'entry';
+  entry.innerHTML = `<span class="t">${time}</span><span>${msg}</span>`;
+  logList.prepend(entry);
+}
+
+/* ---------------- MIC / AUDIO LISTENER ---------------- */
+const micBtn = document.getElementById('mic-btn');
+const micStatus = document.getElementById('mic-status');
+const bars = document.querySelectorAll('#visualizer span');
+let micStream, audioCtx, analyser, micActive = false, rafId;
+
+async function startMic(){
+  try{
+    micStream = await navigator.mediaDevices.getUserMedia({audio:true});
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 64;
+    const source = audioCtx.createMediaStreamSource(micStream);
+    source.connect(analyser);
+    micActive = true;
+    micStatus.innerHTML = '<span class="dot"></span> Listening…';
+    micBtn.textContent = '';
+    micBtn.className = 'action-btn stop';
+    micBtn.innerHTML = 'Stop listening';
+    addLog('Microphone connected — listening for audio.');
+    visualize();
+  }catch(err){
+    micStatus.innerHTML = '<span class="dot" style="background:#DC4C3E;box-shadow:none;"></span> Permission denied or unavailable';
+    addLog('Microphone access failed: '+err.message);
+  }
+}
+
+function stopMic(){
+  micActive = false;
+  cancelAnimationFrame(rafId);
+  if(micStream) micStream.getTracks().forEach(t=>t.stop());
+  if(audioCtx) audioCtx.close();
+  bars.forEach(b=>b.style.height='4px');
+  micStatus.innerHTML = '<span class="dot" style="background:#d1d5db;box-shadow:none;"></span> Idle — mic stopped';
+  micBtn.className = 'action-btn';
+  micBtn.innerHTML = 'Start listening';
+  addLog('Microphone stopped.');
+}
+
+function visualize(){
+  if(!micActive) return;
+  const data = new Uint8Array(analyser.frequencyBinCount);
+  analyser.getByteFrequencyData(data);
+  bars.forEach((bar,i)=>{
+    const v = data[i*2] || 0;
+    bar.style.height = Math.max(4, (v/255)*60)+'px';
+  });
+  rafId = requestAnimationFrame(visualize);
+}
+
+micBtn.addEventListener('click', ()=> micActive ? stopMic() : startMic());
+
+/* ---------------- CAMERA ---------------- */
+const camBtn = document.getElementById('cam-btn');
+const camStatus = document.getElementById('cam-status');
+const camPreview = document.getElementById('cam-preview');
+let camStream, camActive = false;
+
+async function startCam(){
+  try{
+    camStream = await navigator.mediaDevices.getUserMedia({video:true});
+    camPreview.innerHTML = '';
+    const video = document.createElement('video');
+    video.autoplay = true; video.playsInline = true; video.muted = true;
+    video.srcObject = camStream;
+    camPreview.appendChild(video);
+    camActive = true;
+    camStatus.innerHTML = '<span class="dot"></span> Camera live';
+    camBtn.className = 'action-btn stop';
+    camBtn.innerHTML = 'Disable camera';
+    addLog('Camera connected — live preview active.');
+  }catch(err){
+    camStatus.innerHTML = '<span class="dot" style="background:#DC4C3E;box-shadow:none;"></span> Permission denied or unavailable';
+    addLog('Camera access failed: '+err.message);
+  }
+}
+
+function stopCam(){
+  camActive = false;
+  if(camStream) camStream.getTracks().forEach(t=>t.stop());
+  camPreview.innerHTML = '<span class="placeholder">Camera off</span>';
+  camStatus.innerHTML = '<span class="dot" style="background:#d1d5db;box-shadow:none;"></span> Not connected';
+  camBtn.className = 'action-btn';
+  camBtn.innerHTML = 'Enable camera';
+  addLog('Camera disabled.');
+}
+
+camBtn.addEventListener('click', ()=> camActive ? stopCam() : startCam());
+
+/* ---------------- UPLOAD ---------------- */
+const dropzone = document.getElementById('dropzone');
+const fileInput = document.getElementById('file-input');
+const thumbRow = document.getElementById('thumb-row');
+const uploadStatus = document.getElementById('upload-status');
+let fileCount = 0;
+
+dropzone.addEventListener('click', ()=> fileInput.click());
+dropzone.addEventListener('dragover', e=>{ e.preventDefault(); dropzone.classList.add('drag'); });
+dropzone.addEventListener('dragleave', ()=> dropzone.classList.remove('drag'));
+dropzone.addEventListener('drop', e=>{
+  e.preventDefault();
+  dropzone.classList.remove('drag');
+  handleFiles(e.dataTransfer.files);
+});
+fileInput.addEventListener('change', e=> handleFiles(e.target.files));
+
+function handleFiles(files){
+  [...files].forEach(file=>{
+    if(!file.type.startsWith('image/')) return;
+    const reader = new FileReader();
+    reader.onload = ev=>{
+      const img = document.createElement('img');
+      img.src = ev.target.result;
+      thumbRow.appendChild(img);
+      fileCount++;
+      uploadStatus.innerHTML = `<span class="dot"></span> ${fileCount} photo${fileCount>1?'s':''} added`;
+      addLog(`Photo uploaded: ${file.name}`);
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+/* ---------------- VOICE ASSISTANT ORB ---------------- */
+const orb = document.getElementById('orb');
+const consoleEl = document.getElementById('console');
+const transcript = document.getElementById('transcript');
+const orbMicBtn = document.getElementById('orb-mic-btn');
+
+function toggleConsole(force){
+  const open = force !== undefined ? force : !consoleEl.classList.contains('open');
+  consoleEl.classList.toggle('open', open);
+}
+
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+let recognition, recognizing = false;
+
+if(SpeechRecognition){
+  recognition = new SpeechRecognition();
+  recognition.continuous = false;
+  recognition.interimResults = true;
+  recognition.onresult = (e)=>{
+    let text = '';
+    for(let i=0;i<e.results.length;i++) text += e.results[i][0].transcript;
+    transcript.textContent = text;
+    transcript.classList.remove('placeholder');
+  };
+  recognition.onend = ()=>{
+    recognizing = false;
+    orb.classList.remove('listening');
+    orbMicBtn.textContent = 'Speak';
+    addLog('Voice assistant finished listening.');
+  };
+  recognition.onerror = (e)=>{
+    transcript.textContent = 'Could not access microphone for speech recognition.';
+    transcript.classList.remove('placeholder');
+  };
+} 
+
+orbMicBtn.addEventListener('click', ()=>{
+  if(!SpeechRecognition){
+    transcript.textContent = 'Speech recognition is not supported in this browser.';
+    transcript.classList.remove('placeholder');
+    return;
+  }
+  if(recognizing){
+    recognition.stop();
+    return;
+  }
+  recognizing = true;
+  orb.classList.add('listening');
+  orbMicBtn.textContent = 'Stop';
+  transcript.textContent = 'Listening…';
+  transcript.classList.remove('placeholder');
+  addLog('Voice assistant is listening.');
+  recognition.start();
+});
+</script>
+
+</body>
+</html>
